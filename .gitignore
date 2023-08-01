@@ -1,2 +1,14 @@
 /.DS_Store
 /venv
+auth-blueprint/migrations/script.py.mako
+auth-blueprint/migrations/README
+auth-blueprint/migrations/env.py
+auth-blueprint/migrations/alembic.ini
+auth-blueprint/migrations/versions/681671992b47_.py
+auth-blueprint/migrations/versions/__pycache__/681671992b47_.cpython-310.pyc
+auth-blueprint/migrations/__pycache__/env.cpython-310.pyc
+auth-blueprint/__pycache__/run.cpython-310.pyc
+auth-blueprint/app/__pycache__/__init__.cpython-310.pyc
+auth-blueprint/app/main/__pycache__/__init__.cpython-310.pyc
+auth-blueprint/app/main/__pycache__/models.cpython-310.pyc
+auth-blueprint/app/main/__pycache__/routes.cpython-310.pyc
