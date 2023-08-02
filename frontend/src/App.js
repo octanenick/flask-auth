@@ -1,49 +1,104 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Transactions from './Transactions';
-import Exchange from './Exchange';
-import Header from './main/Header';
-import Login from './Login';
-import api, { setAuthHeaders, adminAuth } from './api';
+import api from './api';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 
-function App() {
-  const [authToken, setAuthToken] = useState(localStorage.getItem('auth') || null);
+function Register() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
-  const authenticate = async (password) => {
+  const handleRegister = async () => {
     try {
-      const response = await api.post('/userauth', { password }, { auth: adminAuth });
-      localStorage.setItem('auth', response.data.access_token);
-      setAuthToken(response.data.access_token);
+      const response = await api.post('/api/register', {
+        username: username,
+        password: password
+      });
+      setMessage(response.data.message);
+      navigate('/login');
     } catch (error) {
-      console.error(error);
+      setMessage(error.response.data.message);
     }
-  };
-
-  useEffect(() => {
-    // If the authToken changes, we update the axios instance
-    setAuthHeaders(authToken);
-  }, [authToken]);
-
-  // If there is no authToken, we show the login screen
-  if (!authToken) {
-    return <Login authenticate={authenticate} />;
   }
 
   return (
-    <div className="App">
-      <Router>
-        <Header />
-        <div className="container-fluid">
-          <div className="row">
-            <Routes>
-              <Route path="/transactions" element={<Transactions />} />
-              <Route path="/exchange" element={<Exchange />} />
-              <Route path="*" element={<Transactions />} />
-            </Routes>
-          </div>
-        </div>
-      </Router>
+    <div className="container">
+      <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+      <button onClick={handleRegister} className="btn btn-primary">Register</button>
+      <p>{message}</p>
     </div>
+  );
+}
+
+function Login() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    try {
+      const response = await api.post('/api/login', {
+        username: username,
+        password: password
+      });
+      setMessage("Login successful. Your token: " + response.data.token);
+      localStorage.setItem('token', response.data.token);
+      navigate('/');
+    } catch (error) {
+      setMessage(error.response.data.message);
+    }
+  }
+
+  return (
+    <div className="container">
+      <input type="text" placeholder="Username" value={username} onChange={e => setUsername(e.target.value)} />
+      <input type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+      <button onClick={handleLogin} className="btn btn-primary">Login</button>
+      <p>{message}</p>
+    </div>
+  );
+}
+
+function Home() {
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    const getProtectedMessage = async () => {
+      try {
+        const response = await api.get('/api/protected');
+        setMessage(response.data.message);
+      } catch (error) {
+        setMessage("You are not logged in.");
+      }
+    }
+
+    getProtectedMessage();
+  }, []);
+
+  return (
+    <div className="container">
+      <p>{message}</p>
+    </div>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <div className="container my-3">
+        <Link to="/" className="btn btn-link">Home</Link>
+        <Link to="/register" className="btn btn-link">Register</Link>
+        <Link to="/login" className="btn btn-link">Login</Link>
+      </div>
+
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 

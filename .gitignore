@@ -12,3 +12,6 @@ auth-blueprint/app/__pycache__/__init__.cpython-310.pyc
 auth-blueprint/app/main/__pycache__/__init__.cpython-310.pyc
 auth-blueprint/app/main/__pycache__/models.cpython-310.pyc
 auth-blueprint/app/main/__pycache__/routes.cpython-310.pyc
+frontend/node_modules
+node_modules
+frontend/package-lock.json
