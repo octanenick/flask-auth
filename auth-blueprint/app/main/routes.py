@@ -5,9 +5,18 @@ from .models import db, User
 
 main = Blueprint('main', __name__)
 
+def check_request_data(data):
+    if not data or 'username' not in data or 'password' not in data:
+        return False
+    return True
+
 @main.route('/api/register', methods=['POST'])
 def register():
     data = request.get_json()
+
+    if not check_request_data(data):
+        return jsonify(message="Missing username or password."), 400
+
     username = data['username']
     password = data['password']
 
@@ -25,6 +34,10 @@ def register():
 @main.route('/api/login', methods=['POST'])
 def login():
     data = request.get_json()
+
+    if not check_request_data(data):
+        return jsonify(message="Missing username or password."), 400
+
     username = data['username']
     password = data['password']
 
